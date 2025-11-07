@@ -1,14 +1,17 @@
 // src/pages/Productos.tsx
 import { useCallback, useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { productos, Product } from '../assets/products'
+import { useCart } from '../context/CartContext'
 
-// Normaliza para comparar (sin tildes ni mayúsculas)
+// Contexto que viene desde MainLayout -> <Outlet context={{ showToast }}>
+type OutletCtx = { showToast: (msg: string) => void }
+
+// Normaliza texto (sin mayúsculas, sin tildes, espacios de más)
 const norm = (s: string) =>
-  s
-    .toLowerCase()
+  s.toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
 
@@ -18,6 +21,9 @@ export default function Productos() {
   const q = params.get('q') ?? ''
   const qn = norm(q)
 
+  const { add } = useCart()
+  const { showToast } = useOutletContext<OutletCtx>()   // 👈 aquí tomamos el toast
+
   const [brand, setBrand] = useState<'All' | Product['brand']>('All')
   const handleBrand = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setBrand(e.target.value as any)
@@ -26,7 +32,6 @@ export default function Productos() {
   const filtered = useMemo(() => {
     let out = productos
     if (brand !== 'All') out = out.filter(p => p.brand === brand)
-
     if (qn) {
       out = out.filter(p => {
         const name = norm(p.nombre)
@@ -64,20 +69,30 @@ export default function Productos() {
                   <p className="text-muted mb-2">{producto.brand}</p>
                   <p className="card-text">{producto.descripcion}</p>
                   <p className="fw-bold text-primary">{producto.precio}</p>
-                  <div className="mt-auto d-grid">
+
+                  <div className="mt-auto d-grid gap-2">
                     <Link to={`/producto/${producto.id}`} className="btn btn-outline-secondary">
                       Ver más
                     </Link>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        add(producto)
+                        showToast(`✅ ${producto.nombre} agregado al carrito`)
+                      }}
+                    >
+                      Añadir al carrito
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           ))}
+
           {!filtered.length && <p className="text-muted">No hay productos.</p>}
         </div>
       )}
     </div>
   )
 }
-
-
