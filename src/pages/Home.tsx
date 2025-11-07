@@ -1,26 +1,41 @@
-// Importa tus banners desde src/assets/images/banner/
+// src/pages/Home.tsx
+import { useMemo } from 'react'
+import { Link, useOutletContext } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
+import { productos, Product } from '../assets/products'
+
+// Banners
 import banner1 from '../assets/images/banner/banner1.jpg'
 import banner2 from '../assets/images/banner/banner2.jpg'
 import banner3 from '../assets/images/banner/banner3.jpg'
 import banner4 from '../assets/images/banner/banner4.png'
 
-// Importa imágenes de productos desde src/assets/images/productos/
-import producto1 from '../assets/images/productos/apple/iPhone 16 Pro Max Desierto-256 GB/iphone_16_pro_max_desert_titanium_pdp_image_position_1__gens.jpg'
-import producto2 from '../assets/images/productos/xiaomi/Xiaomi 14T 512GB Black/gs-xiaomi_14t_black-_v_1_1.jpg'
-import producto3 from '../assets/images/productos/samsung/Samsung Galaxy S25 Ultra 256 GB Titanium Black/sm-s938bakkltl_1_2.jpg'
-import producto4 from '../assets/images/productos/motorola/Motorola G35 128 GB Negro/01_motog35-5g_negro_.png'
-import producto5 from '../assets/images/productos/honor/Honor X6B 256 GB Black/honor_-_x6b_5g_black_0_2.jpg'
+// Contexto que entrega MainLayout vía <Outlet context={{ showToast }}>
+type OutletCtx = { showToast: (msg: string) => void }
 
 export default function Home() {
   const banners = [banner1, banner2, banner3, banner4]
 
-  const productosDestacados = [
-    { id: 1, nombre: 'iPhone 16 Pro Max Desierto-256 GB', precio: '$1.000.000', imagen: producto1 },
-    { id: 2, nombre: 'Xiaomi 14T 512GB Black', precio: '$690.990', imagen: producto2 },
-    { id: 3, nombre: 'Samsung Galaxy S25 Ultra 256 GB Titanium Black', precio: '$1.200.000', imagen: producto3 },
-    { id: 4, nombre: 'Motorola G35 128 GB Negro', precio: '$299.990', imagen: producto4 },
-    { id: 5, nombre: 'Honor X6B 256 GB Black', precio: '$399.990', imagen: producto5 },
-  ]
+  // carrito + toast
+  const { add } = useCart()
+  const { showToast } = useOutletContext<OutletCtx>()
+
+  // Elegimos destacados directamente desde el catálogo global
+  // solo Apple y Samsung (evitamos Motorola/Honor que no están en products.ts)
+  // Puedes ajustar el orden/ids a gusto:
+  
+  const featuredIds = [3, 6, 1, 5] // (Apple 16 Pro Max, Samsung S25 Ultra, iPhone 13 Pro, Samsung A56)
+  const destacados: Product[] = useMemo(() => {
+    const set = new Set(featuredIds)
+    return productos
+      .filter(p => (p.brand === 'Apple' || p.brand === 'Samsung') && set.has(p.id))
+      // por si falta alguno, igual mostramos los primeros Apple/Samsung
+      .concat(
+        productos.filter(p => p.brand === 'Apple' || p.brand === 'Samsung')
+      )
+      .filter((p, idx, arr) => arr.findIndex(x => x.id === p.id) === idx) // únicos
+      .slice(0, 8) // máximo 8 destacados
+  }, [])
 
   return (
     <div className="container">
@@ -89,18 +104,42 @@ export default function Home() {
       {/* Productos destacados */}
       <h2 className="mb-4">Productos destacados</h2>
       <div className="row">
-        {productosDestacados.map(producto => (
-          <div key={producto.id} className="col-md-4 col-lg-3 mb-4">
-            <div className="card h-100">
-              <img src={producto.imagen} className="card-img-top" alt={producto.nombre} />
-              <div className="card-body">
-                <h5 className="card-title">{producto.nombre}</h5>
-                <p className="card-text">{producto.precio}</p>
-                <button className="btn btn-outline-primary w-100">Ver más</button>
+        {destacados.map((p) => (
+          <div key={p.id} className="col-md-6 col-lg-3 mb-4">
+            <div className="card h-100 shadow-sm">
+              <img
+                src={p.imagen}
+                className="card-img-top"
+                alt={p.nombre}
+                style={{ objectFit: 'cover', height: 220 }}
+              />
+              <div className="card-body d-flex flex-column">
+                <h6 className="text-muted mb-1">{p.brand}</h6>
+                <h5 className="card-title mb-1">{p.nombre}</h5>
+                <p className="fw-bold text-primary">{p.precio}</p>
+
+                <div className="mt-auto d-grid gap-2">
+                  <Link to={`/producto/${p.id}`} className="btn btn-outline-secondary">
+                    Ver más
+                  </Link>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      add(p)
+                      showToast(`✅ ${p.nombre} agregado al carrito`)
+                    }}
+                  >
+                    Añadir al carrito
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         ))}
+
+        {!destacados.length && (
+          <p className="text-muted">Pronto agregaremos productos destacados.</p>
+        )}
       </div>
     </div>
   )
