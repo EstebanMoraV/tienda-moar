@@ -2,22 +2,33 @@ import { Link } from 'react-router-dom'
 
 export default function Header() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light px-4">
-      <Link className="navbar-brand" to="/">TiendaMoAr 🛍️</Link>
+    <header className="bg-dark border-bottom">
+      <div className="container-fluid py-2">
+        <div className="d-flex justify-content-between align-items-center text-white">
+          {/* 🛍️ Izquierda: Logo */}
+          <div className="fw-bold fs-4">
+            <Link to="/" className="text-decoration-none text-white">
+              TiendaMoAr
+            </Link>
+          </div>
 
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav me-auto">
-          <li className="nav-item">
-            <Link className="nav-link" to="/">Inicio</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/productos">Productos</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/carrito">Carrito</Link>
-          </li>
-        </ul>
+          {/* 🔗 Centro: Navegación */}
+          <nav className="d-none d-md-flex gap-3">
+            <Link to="/" className="nav-link text-white">Inicio</Link>
+            <Link to="/productos" className="nav-link text-white">Productos</Link>
+            <Link to="/blog" className="nav-link text-white">Blog</Link>
+            <Link to="/nosotros" className="nav-link text-white">Nosotros</Link>
+            <Link to="/contacto" className="nav-link text-white">Contacto</Link>
+          </nav>
+
+          {/* 🛒 Derecha: Carrito */}
+          <div>
+            <Link to="/carrito" className="btn btn-outline-light">
+              🛒 Carrito
+            </Link>
+          </div>
+        </div>
       </div>
-    </nav>
+    </header>
   )
 }
