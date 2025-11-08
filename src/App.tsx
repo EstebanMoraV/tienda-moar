@@ -9,7 +9,7 @@ import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Nosotros from "./pages/Nosotros";
+import Nosotros from './pages/Nosotros';
 
 export default function AppRoutes() {
   return (
@@ -27,11 +27,11 @@ export default function AppRoutes() {
         {/* Carrito */}
         <Route path="carrito" element={<Carrito />} />
 
+        {/* Nosotros */}
+        <Route path="nosotros" element={<Nosotros />} />
+
         {/* Login */}
         <Route path="login" element={<Login />} />
-
-        {/* Página Nosotros */}
-        <Route path="nosotros" element={<Nosotros />} />
 
         {/* Área de administrador protegida */}
         <Route
