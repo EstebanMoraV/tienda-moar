@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Nosotros from './pages/Nosotros';
+import Blog from "./pages/Blog";
 
 export default function AppRoutes() {
   return (
@@ -29,6 +30,9 @@ export default function AppRoutes() {
 
         {/* Nosotros */}
         <Route path="nosotros" element={<Nosotros />} />
+
+        {/* Blog */}
+        <Route path="blog" element={<Blog />} />
 
         {/* Login */}
         <Route path="login" element={<Login />} />
