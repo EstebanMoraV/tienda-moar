@@ -9,7 +9,6 @@ import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Nosotros from './pages/Nosotros'
 import Blog from './pages/Blog'
 
 export default function AppRoutes() {
@@ -23,7 +22,6 @@ export default function AppRoutes() {
   <Route path="carrito" element={<Carrito />} />
   <Route path="login" element={<Login />} />
   <Route path="blog" element={<Blog />} />
-  <Route path="nosotros" element={<Nosotros />} />
   <Route
     path="admin"
     element={
