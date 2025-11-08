@@ -9,29 +9,37 @@ import Carrito from "./pages/Carrito";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import Blog from './pages/Blog'
 
 export default function AppRoutes() {
   return (
     <Routes>
       {/* Todas las páginas van dentro del MainLayout */}
-<Route path="/" element={<MainLayout />}>
-  <Route index element={<Home />} />
-  <Route path="productos" element={<Productos />} />
-  <Route path="producto/:id" element={<ProductoDetalle />} />
-  <Route path="carrito" element={<Carrito />} />
-  <Route path="login" element={<Login />} />
-  <Route path="blog" element={<Blog />} />
-  <Route
-    path="admin"
-    element={
-      <ProtectedRoute>
-        <AdminDashboard />
-      </ProtectedRoute>
-    }
-  />
-</Route>
+      <Route path="/" element={<MainLayout />}>
 
+        {/* Página principal */}
+        <Route index element={<Home />} />
+
+        {/* Productos y detalle */}
+        <Route path="productos" element={<Productos />} />
+        <Route path="producto/:id" element={<ProductoDetalle />} />
+
+        {/* Carrito */}
+        <Route path="carrito" element={<Carrito />} />
+
+        {/* Login */}
+        <Route path="login" element={<Login />} />
+
+        {/* Área de administrador protegida */}
+        <Route
+          path="admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+      </Route>
 
       {/* Página 404 */}
       <Route path="*" element={<div className="container py-5">404 - Página no encontrada</div>} />
